@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Teretere</string>
+    <string name="tester_title">Test keyboard</string>
+    <string name="tester_submit">Submit</string>
+
+    <string name="pref_swap_key">pref_swap</string>
+    <string name="pref_swap_title">Flip layout</string>
+    <string name="pref_swap_summary_on">Buttons are on the left side.</string>
+    <string name="pref_swap_summary_off">Buttons are on the right side.</string>
+    <string name="pref_permissions_key">pref_permissions</string>
+    <string name="pref_permissions_title">Grant permissions</string>
+    <string name="pref_permissions_summary_on">Already granted.</string>
+    <string name="pref_permissions_summary_off">Teretere requires storage access.</string>
+    <string name="pref_test_key">pref_test</string>
+    <string name="pref_test_title">Test keyboard</string>
+    <string name="pref_test_summary">Open a fake "log-in" modal for testing.</string>
+</resources>
