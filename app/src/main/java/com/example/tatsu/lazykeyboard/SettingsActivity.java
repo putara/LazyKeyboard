@@ -12,9 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import java.io.IOException;
 
 public class SettingsActivity extends Activity implements Preference.OnPreferenceClickListener {
@@ -36,7 +33,7 @@ public class SettingsActivity extends Activity implements Preference.OnPreferenc
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode != REQUEST_CODE) {
             return;
         }
@@ -82,7 +79,7 @@ public class SettingsActivity extends Activity implements Preference.OnPreferenc
         }
 
         @Override
-        public void onCreate(@Nullable Bundle savedInstanceState) {
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
             mPermissionPreference = (PermissionPreference) findPreference(getString(R.string.pref_permissions_key));

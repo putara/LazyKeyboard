@@ -10,24 +10,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-public class InputView extends ConstraintLayout implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class InputView extends RelativeLayout implements SharedPreferences.OnSharedPreferenceChangeListener {
     public interface OnKeyboardActionListener {
         void onPress(String email, String password);
         void onSwitchIme();
@@ -38,7 +31,7 @@ public class InputView extends ConstraintLayout implements SharedPreferences.OnS
     private static final String TAG = "InputView";
 
     private OnKeyboardActionListener mListener;
-    private RecyclerView mRecyclerView;
+    private ListView mListView;
     private LinearLayout mOverlayLayout;
     private TextView mErrorView;
     private Adapter mAdapter;
@@ -48,7 +41,7 @@ public class InputView extends ConstraintLayout implements SharedPreferences.OnS
     private SharedPreferences mPreferences;
     private boolean mLayoutSwapped;
 
-    public InputView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public InputView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -70,7 +63,7 @@ public class InputView extends ConstraintLayout implements SharedPreferences.OnS
     }
 
     public InputView setCredentials(Credential[] credentials) {
-        setAdapter(new Adapter(credentials));
+        setAdapter(new Adapter(getContext(), credentials));
         setError(null);
         return this;
     }
@@ -86,20 +79,19 @@ public class InputView extends ConstraintLayout implements SharedPreferences.OnS
         if (mErrorView == null) {
             mErrorView = findViewById(R.id.error);
         }
-        setAdapter(new Adapter(new Credential[0]));
+        setAdapter(new Adapter(getContext(), new Credential[0]));
         mErrorView.setText(text);
         mOverlayLayout.setVisibility(View.VISIBLE);
         return this;
     }
 
     private void setAdapter(Adapter adapter) {
-        if (mRecyclerView == null) {
-            mRecyclerView = findViewById(R.id.list);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        if (mListView == null) {
+            mListView = findViewById(R.id.list);
             loadSettings();
         }
         mAdapter = adapter;
-        mRecyclerView.setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
     }
 
     private void firePressEvent(String email, String password) {
@@ -139,8 +131,8 @@ public class InputView extends ConstraintLayout implements SharedPreferences.OnS
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "onSharedPreferenceChanged");
         loadSettings();
-        if (mRecyclerView != null) {
-            mRecyclerView.setAdapter(mAdapter);
+        if (mListView != null) {
+            mListView.setAdapter(mAdapter);
         }
     }
 
@@ -161,68 +153,59 @@ public class InputView extends ConstraintLayout implements SharedPreferences.OnS
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(metrics.heightPixels * 2 / 5, MeasureSpec.EXACTLY));
     }
 
-    class Adapter extends RecyclerView.Adapter<ViewHolder> {
-        private final List<Credential> mCredentials = new ArrayList<>();
-
-        public Adapter(Credential[] credentials) {
-            Map<String, Credential> map = new LinkedHashMap<>();
-            for (Credential credential : credentials) {
-                map.put(credential.email, credential);
-            }
-            this.mCredentials.addAll(map.values());
+    private static Credential getCredential(View view) {
+        Object tag = view.getTag();
+        if (tag instanceof Credential) {
+            return (Credential) tag;
         }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(mLayoutSwapped ? R.layout.row2 : R.layout.row, parent, false);
-            return new ViewHolder(view);
+        ViewParent parent = view.getParent();
+        if (parent instanceof View) {
+            return getCredential(((View) parent));
         }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.bind(mCredentials.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return mCredentials.size();
-        }
+        return null;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView mInfo;
-        private final Button mSubmit;
-        private Credential mCredential;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mInfo = itemView.findViewById(R.id.info);
-            mSubmit = itemView.findViewById(R.id.submit);
-            mSubmit.setOnClickListener(v -> {
-                if (mCredential != null) {
-                    firePressEvent(mCredential.email, mCredential.password);
-                }
-            });
-            mSubmit.setOnLongClickListener(v -> {
-                if (mCredential != null) {
-                    Toast.makeText(getContext(), mCredential.email, Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
-            });
-            itemView.setOnClickListener(v -> {
-                if (mCredential != null) {
-                    Toast.makeText(getContext(), mCredential.email, Toast.LENGTH_SHORT).show();
-                }
-            });
+    class Adapter extends ArrayAdapter<Credential> {
+        public Adapter(Context context, Credential[] credentials) {
+            super(context, 0, credentials);
         }
 
-        public void bind(Credential credential) {
-            mInfo.setText(credential.info);
-            mSubmit.setText(credential.name);
-            mCredential = credential;
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            boolean init = convertView == null;
+            if (init) {
+                convertView = LayoutInflater.from(getContext())
+                    .inflate(mLayoutSwapped ? R.layout.row2 : R.layout.row, parent, false);
+            }
+            convertView.setTag(getItem(position));
+            TextView info = convertView.findViewById(R.id.info);
+            Button submit = convertView.findViewById(R.id.submit);
+            if (init) {
+                submit.setOnClickListener(v -> {
+                    Credential credential = getCredential(v);
+                    if (credential != null) {
+                        firePressEvent(credential.email, credential.password);
+                    }
+                });
+                submit.setOnLongClickListener(v -> {
+                    Credential credential = getCredential(v);
+                    if (credential != null) {
+                        Toast.makeText(getContext(), credential.email, Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    return false;
+                });
+                convertView.setOnClickListener(v -> {
+                    Credential credential = getCredential(v);
+                    if (credential != null) {
+                        Toast.makeText(getContext(), credential.email, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            Credential credential = (Credential) convertView.getTag();
+            info.setText(credential.info);
+            submit.setText(credential.name);
+            return convertView;
         }
     }
 }
