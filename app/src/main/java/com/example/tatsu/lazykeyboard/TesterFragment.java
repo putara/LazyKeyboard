@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class TesterFragment extends DialogFragment {
 
@@ -41,8 +39,8 @@ public class TesterFragment extends DialogFragment {
                 .from(getActivity())
                 .inflate(R.layout.tester, (ViewGroup)getView(), false);
 
-        EditText userText = (EditText) layout.findViewById(R.id.userText);
-        EditText passText = (EditText) layout.findViewById(R.id.passText);
+        EditText userText = layout.findViewById(R.id.userText);
+        EditText passText = layout.findViewById(R.id.passText);
 
         InputMethodManager imeManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
@@ -56,11 +54,9 @@ public class TesterFragment extends DialogFragment {
                             imeManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                         }
                     }
-                    DialogInterface.OnClickListener emptyListener = (x, y) -> {};
                     new AlertDialog.Builder(getContext())
-                            .setTitle("Result")
-                            .setMessage(String.format("Email:\n%s\n\nPassword:\n%s", userText.getText().toString(), passText.getText().toString()))
-//                            .setPositiveButton(android.R.string.ok, emptyListener)
+                            .setTitle(R.string.tester_result_title)
+                            .setMessage(String.format(getString(R.string.tester_result_format), userText.getText().toString(), passText.getText().toString()))
                             .create()
                             .show();
                 })

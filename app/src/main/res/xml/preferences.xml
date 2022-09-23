@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.example.tatsu.lazykeyboard.PermissionPreference
-        android:key="@string/pref_permissions_key"
-        android:summaryOff="@string/pref_permissions_summary_off"
-        android:summaryOn="@string/pref_permissions_summary_on"
-        android:title="@string/pref_permissions_title" />
+    <PreferenceCategory android:title="@string/pref_group_prerequisites">
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/pref_swap_key"
-        android:summaryOff="@string/pref_swap_summary_off"
-        android:summaryOn="@string/pref_swap_summary_on"
-        android:title="@string/pref_swap_title" />
+        <com.example.tatsu.lazykeyboard.PermissionPreference
+            android:key="@string/pref_permissions_key"
+            android:summaryOff="@string/pref_permissions_summary_off"
+            android:summaryOn="@string/pref_permissions_summary_on"
+            android:title="@string/pref_permissions_title" />
 
-    <com.example.tatsu.lazykeyboard.TestPreference
-        android:key="@string/pref_test_key"
-        android:summary="@string/pref_test_summary"
-        android:title="@string/pref_test_title" />
+        <com.example.tatsu.lazykeyboard.ImePreference
+            android:key="@string/pref_ime_key"
+            android:summaryOff="@string/pref_ime_summary_off"
+            android:summaryOn="@string/pref_ime_summary_on"
+            android:title="@string/pref_ime_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_group_general">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_swap_key"
+            android:summaryOff="@string/pref_swap_summary_off"
+            android:summaryOn="@string/pref_swap_summary_on"
+            android:title="@string/pref_swap_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_group_others">
+
+        <com.example.tatsu.lazykeyboard.NullPreference
+            android:key="@string/pref_test_key"
+            android:summary="@string/pref_test_summary"
+            android:title="@string/pref_test_title" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

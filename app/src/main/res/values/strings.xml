@@ -1,16 +1,31 @@
 <resources>
     <string name="app_name">Teretere</string>
+    <string name="grant_permission_message">Please grant storage access.</string>
+    <string name="enable_ime_message">Please enable the keyboard.</string>
+    <string name="both_message">Please grant storage access and enable the keyboard.</string>
+
     <string name="tester_title">Test keyboard</string>
     <string name="tester_submit">Submit</string>
+    <string name="tester_result_title">Result</string>
+    <string name="tester_result_format">Email:\n%s\n\nPassword:\n%s</string>
+
+    <string name="pref_group_prerequisites">Prerequisites</string>
+    <string name="pref_permissions_key">pref_permissions</string>
+    <string name="pref_permissions_title">Grant permissions</string>
+    <string name="pref_permissions_summary_on">Already granted.</string>
+    <string name="pref_permissions_summary_off">Storage access is required.</string>
+    <string name="pref_ime_key">pref_ime</string>
+    <string name="pref_ime_title">Enable keyboard</string>
+    <string name="pref_ime_summary_on">Already enabled.</string>
+    <string name="pref_ime_summary_off">Teretere must be enabled in the system settings.</string>
+
+    <string name="pref_group_general">General</string>
+    <string name="pref_group_others">Others</string>
 
     <string name="pref_swap_key">pref_swap</string>
     <string name="pref_swap_title">Flip layout</string>
     <string name="pref_swap_summary_on">Buttons are on the left side.</string>
     <string name="pref_swap_summary_off">Buttons are on the right side.</string>
-    <string name="pref_permissions_key">pref_permissions</string>
-    <string name="pref_permissions_title">Grant permissions</string>
-    <string name="pref_permissions_summary_on">Already granted.</string>
-    <string name="pref_permissions_summary_off">Teretere requires storage access.</string>
     <string name="pref_test_key">pref_test</string>
     <string name="pref_test_title">Test keyboard</string>
     <string name="pref_test_summary">Open a fake "log-in" modal for testing.</string>
